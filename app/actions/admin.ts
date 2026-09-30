@@ -14,7 +14,7 @@ export async function loginAdminAction(formData: FormData) {
   const expectedUsername = process.env.ADMIN_USERNAME || 'admin';
   const expectedPassword = process.env.ADMIN_PASSWORD || 'adminosis';
 
-  if (username !== expectedUsername || password !== expectedPassword) {
+  if (!username || username.toLowerCase() !== expectedUsername.toLowerCase() || password !== expectedPassword) {
     return { error: 'Kredensial Admin tidak valid.' };
   }
 

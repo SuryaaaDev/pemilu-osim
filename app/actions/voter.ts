@@ -13,13 +13,14 @@ export async function loginVoter(formData: FormData) {
   }
 
   const supabase = createAdminClient();
+  const escapedUsername = username.replace(/\\/g, '\\\\').replace(/%/g, '\\%').replace(/_/g, '\\_');
 
-  // Find voter by username
+  // Find voter by username (case-insensitive)
   const { data: voter, error } = await supabase
     .from('voters')
     .select('*')
-    .eq('username', username)
-    .single();
+    .ilike('username', escapedUsername)
+    .maybeSingle();
 
   if (error || !voter) {
     return { error: 'Username atau Password salah.' };

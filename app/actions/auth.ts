@@ -12,23 +12,24 @@ export async function unifiedLoginAction(formData: FormData) {
     return { error: 'Username dan Password wajib diisi.' };
   }
 
-  // 1. Check if input matches Admin Credentials from .env
+  // 1. Check if input matches Admin Credentials from .env (case-insensitive username)
   const expectedAdminUsername = process.env.ADMIN_USERNAME || 'admin';
   const expectedAdminPassword = process.env.ADMIN_PASSWORD || 'adminosis';
 
-  if (username === expectedAdminUsername && password === expectedAdminPassword) {
+  if (username.toLowerCase() === expectedAdminUsername.toLowerCase() && password === expectedAdminPassword) {
     await createAdminSession(username);
     return { success: true, redirectUrl: '/admin/dashboard' };
   }
 
-  // 2. If not admin, check Voter Credentials in database
+  // 2. If not admin, check Voter Credentials in database (case-insensitive username lookup)
   const supabase = createAdminClient();
+  const escapedUsername = username.replace(/\\/g, '\\\\').replace(/%/g, '\\%').replace(/_/g, '\\_');
 
   const { data: voter, error } = await supabase
     .from('voters')
     .select('*')
-    .eq('username', username)
-    .single();
+    .ilike('username', escapedUsername)
+    .maybeSingle();
 
   if (error || !voter) {
     return { error: 'Username atau Password salah.' };

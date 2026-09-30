@@ -82,7 +82,7 @@ export default function VoteClient({ voterUsername, candidates }: VoteClientProp
           <div className="relative z-10">
             <div className="inline-flex items-center bg-emerald-800 text-emerald-200 px-3 py-1 rounded-full text-xs font-semibold mb-3 border border-emerald-700">
               {/* <ShieldCheck className="h-3.5 w-3.5 mr-1 text-emerald-300" /> */}
-              MAN 1 PEKALONGAN
+              MAN 1 KOTA PEKALONGAN
             </div>
             <h2 className="text-2xl font-bold mb-1">Pilihlah Kandidat Terbaik Anda</h2>
             <p className="text-emerald-100 text-sm max-w-2xl">
@@ -124,7 +124,7 @@ export default function VoteClient({ voterUsername, candidates }: VoteClientProp
                   )}
                   {/* Candidate Number Badge */}
                   <div className="absolute top-4 left-4 bg-emerald-700 text-white font-extrabold px-3.5 py-1.5 rounded-xl shadow-lg text-lg border border-emerald-600">
-                    PASLON {String(candidate.candidate_number).padStart(2, '0')}
+                    KANDIDAT {String(candidate.candidate_number).padStart(2, '0')}
                   </div>
                 </div>
 
@@ -162,7 +162,7 @@ export default function VoteClient({ voterUsername, candidates }: VoteClientProp
                   onClick={() => setSelectedCandidate(candidate)}
                 >
                   <Check className="h-5 w-5 mr-2" />
-                  Pilih Paslon Ini
+                  Pilih Kandidat Ini
                 </Button>
               </CardFooter>
             </Card>
@@ -174,7 +174,7 @@ export default function VoteClient({ voterUsername, candidates }: VoteClientProp
       <Dialog
         isOpen={!!viewVisionCandidate}
         onClose={() => setViewVisionCandidate(null)}
-        title={`Visi & Misi - Paslon ${String(viewVisionCandidate?.candidate_number || '').padStart(2, '0')}`}
+        title={`Visi & Misi - Kandidat ${String(viewVisionCandidate?.candidate_number || '').padStart(2, '0')}`}
         description={viewVisionCandidate?.name}
       >
         <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-1">

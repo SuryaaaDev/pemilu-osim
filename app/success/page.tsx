@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { CheckCircle2, ShieldCheck, Vote, ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { CheckCircle2, ShieldCheck, Vote, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function VoteSuccessPage() {
   const [countdown, setCountdown] = useState(10);
@@ -13,7 +13,7 @@ export default function VoteSuccessPage() {
 
   useEffect(() => {
     if (countdown <= 0) {
-      router.push('/');
+      router.push("/");
       return;
     }
 
@@ -28,8 +28,18 @@ export default function VoteSuccessPage() {
     <div className="min-h-screen flex flex-col justify-center items-center bg-emerald-50/60 p-4">
       <Card className="w-full max-w-md shadow-xl border-emerald-100 bg-white text-center p-6">
         <CardContent className="pt-6 flex flex-col items-center">
-          <div className="mb-4">
-            <img src="/logo-man.png" alt="Logo MAN" className="h-16 w-auto object-contain drop-shadow-sm" />
+          <div className="flex items-center justify-center space-x-4 mb-4">
+            <img
+              src="/logo-man.png"
+              alt="Logo MAN"
+              className="h-16 sm:h-20 w-auto object-contain drop-shadow-md"
+            />
+            <span className="text-emerald-300 font-light text-2xl">|</span>
+            <img
+              src="/logo-osim.png"
+              alt="Logo OSIM"
+              className="h-16 sm:h-20 w-auto object-contain drop-shadow-md"
+            />
           </div>
 
           <div className="h-16 w-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mb-4 border border-emerald-200">
@@ -40,8 +50,9 @@ export default function VoteSuccessPage() {
             Suara Anda Berhasil Disimpan!
           </h1>
           <p className="text-slate-600 text-sm mb-6 leading-relaxed">
-            Terima kasih telah berpartisipasi dalam Pemilihan Ketua & Wakil Ketua OSIM MAN 1 PEKALONGAN. 
-            Hak suara Anda sangat berharga bagi kemajuan sekolah.
+            Terima kasih telah berpartisipasi dalam Pemilihan Ketua & Wakil
+            Ketua OSIM MAN 1 KOTA PEKALONGAN. Hak suara Anda sangat berharga bagi
+            kemajuan sekolah.
           </p>
 
           <div className="w-full bg-emerald-50/50 rounded-lg p-4 mb-6 border border-emerald-100 text-left space-y-2">
@@ -72,4 +83,3 @@ export default function VoteSuccessPage() {
     </div>
   );
 }
-

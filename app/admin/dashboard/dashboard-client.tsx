@@ -265,14 +265,14 @@ export default function DashboardClient({
   const COLORS = ['#047857', '#EAB308', '#0284C7', '#10B981', '#D97706', '#059669'];
 
   const chartData = candidates.map((c, index) => ({
-    name: `Paslon ${String(c.candidate_number).padStart(2, '0')}`,
+    name: `Kandidat ${String(c.candidate_number).padStart(2, '0')}`,
     fullName: c.name,
     votes: c.vote_count,
     color: COLORS[index % COLORS.length],
   }));
 
   const pieChartData = candidates.map((c, index) => ({
-    name: `Paslon ${String(c.candidate_number).padStart(2, '0')}`,
+    name: `Kandidat ${String(c.candidate_number).padStart(2, '0')}`,
     fullName: c.name,
     value: c.vote_count,
     color: COLORS[index % COLORS.length],
@@ -440,7 +440,7 @@ export default function DashboardClient({
       const res = await saveCandidateAction(formData);
       if (res?.error) {
         setModalError(res.error);
-        toast.error(res.error, isEdit ? 'Gagal Edit Paslon' : 'Gagal Tambah Paslon');
+        toast.error(res.error, isEdit ? 'Gagal Edit Kandidat' : 'Gagal Tambah Kandidat');
       } else {
         setIsCandidateModalOpen(false);
         setEditingCandidate(null);
@@ -448,22 +448,22 @@ export default function DashboardClient({
         setPhotoPreview(null);
         toast.success(
           isEdit
-            ? `Data Paslon '${name}' berhasil diperbarui!`
-            : `Paslon baru '${name}' berhasil ditambahkan!`,
-          isEdit ? 'Sukses Edit Paslon' : 'Sukses Tambah Paslon'
+            ? `Data Kandidat '${name}' berhasil diperbarui!`
+            : `Kandidat baru '${name}' berhasil ditambahkan!`,
+          isEdit ? 'Sukses Edit Kandidat' : 'Sukses Tambah Kandidat'
         );
       }
     });
   };
 
   const handleDeleteCandidate = (candidateId: string, name: string) => {
-    if (confirm(`Apakah Anda yakin ingin menghapus '${name}'? Semua data perolehan suara paslon ini akan ikut terhapus.`)) {
+    if (confirm(`Apakah Anda yakin ingin menghapus '${name}'? Semua data perolehan suara kandidat ini akan ikut terhapus.`)) {
       startTransition(async () => {
         const res = await deleteCandidateAction(candidateId);
         if (res?.error) {
-          toast.error(res.error, 'Gagal Hapus Paslon');
+          toast.error(res.error, 'Gagal Hapus Kandidat');
         } else {
-          toast.success(`Paslon '${name}' berhasil dihapus.`, 'Sukses Hapus Paslon');
+          toast.success(`Kandidat '${name}' berhasil dihapus.`, 'Sukses Hapus Kandidat');
         }
       });
     }
@@ -528,7 +528,7 @@ export default function DashboardClient({
             }`}
           >
             <Vote className="h-4 w-4 mr-2" />
-            Data Paslon ({candidates.length})
+            Data Kandidat ({candidates.length})
           </button>
         </div>
 
@@ -612,7 +612,7 @@ export default function DashboardClient({
                 <div className="flex items-center justify-between">
                   <div>
                     <CardTitle className="text-lg text-emerald-950">
-                      Grafik Perolehan Suara Paslon
+                      Grafik Perolehan Suara Kandidat
                     </CardTitle>
                     <CardDescription>
                       Data diperbarui secara instan saat suara dikirimkan pemilih.
@@ -622,7 +622,7 @@ export default function DashboardClient({
               </CardHeader>
               <CardContent className="pt-2">
                 {candidates.length === 0 ? (
-                  <p className="text-center text-slate-400 py-12">Belum ada data paslon.</p>
+                  <p className="text-center text-slate-400 py-12">Belum ada data kandidat.</p>
                 ) : (
                   <div className="h-80 w-full pt-4">
                     <ResponsiveContainer width="100%" height="100%">
@@ -690,7 +690,7 @@ export default function DashboardClient({
               </CardHeader>
               <CardContent className="pt-2">
                 {candidates.length === 0 ? (
-                  <p className="text-center text-slate-400 py-12">Belum ada data paslon.</p>
+                  <p className="text-center text-slate-400 py-12">Belum ada data kandidat.</p>
                 ) : (
                   <div className="h-96 w-full pt-2 flex flex-col items-center">
                     <ResponsiveContainer width="100%" height="100%">
@@ -764,7 +764,7 @@ export default function DashboardClient({
                     REKAPITULASI SUARA REALTIME
                   </h2>
                   <p className="text-xs md:text-sm text-emerald-800 font-medium">
-                    Pemilihan Ketua & Wakil Ketua OSIM 
+                    Pemilihan Ketua OSIM 
                   </p>
                 </div>
               </div>
@@ -784,7 +784,7 @@ export default function DashboardClient({
             {/* Giant Pie Chart Container (Projector Centerpiece on Light Background) */}
             <div className="flex-1 my-6 flex items-center justify-center min-h-[500px] w-full bg-white p-6 rounded-2xl border border-emerald-100 shadow-md">
               {candidates.length === 0 ? (
-                <p className="text-slate-400 text-lg">Belum ada data kandidat paslon.</p>
+                <p className="text-slate-400 text-lg">Belum ada data kandidat kandidat.</p>
               ) : (
                 <ResponsiveContainer width="100%" height={520}>
                   <PieChart>
@@ -1024,13 +1024,13 @@ export default function DashboardClient({
           <div className="space-y-6">
             <div className="flex justify-between items-center">
               <div>
-                <h3 className="text-lg font-bold text-emerald-950">Daftar Pasangan Calon (Paslon)</h3>
-                <p className="text-xs text-slate-500">Kelola nomor urut, foto paslon, visi & misi kandidat</p>
+                <h3 className="text-lg font-bold text-emerald-950">Daftar Kandidat</h3>
+                <p className="text-xs text-slate-500">Kelola nomor urut, foto kandidat, visi & misi kandidat</p>
               </div>
 
               <Button onClick={() => handleOpenCandidateModal(null)} className="bg-emerald-700 hover:bg-emerald-800 text-white font-bold">
                 <Plus className="h-4 w-4 mr-2" />
-                Tambah Paslon Baru
+                Tambah Kandidat Baru
               </Button>
             </div>
 
@@ -1048,7 +1048,7 @@ export default function DashboardClient({
                         </div>
                       )}
                       <div className="absolute top-3 left-3 bg-emerald-700 text-white font-extrabold px-3 py-1 rounded-lg text-sm border border-emerald-600 shadow-md">
-                        PASLON {String(c.candidate_number).padStart(2, '0')}
+                        KANDIDAT {String(c.candidate_number).padStart(2, '0')}
                       </div>
                       <div className="absolute bottom-3 right-3 bg-emerald-950/90 text-emerald-300 font-extrabold px-3 py-1 rounded-lg text-xs backdrop-blur-xs border border-emerald-800">
                         {c.vote_count} Suara Masuk
@@ -1208,8 +1208,8 @@ voter02,`}
           setIsCandidateModalOpen(false);
           setEditingCandidate(null);
         }}
-        title={editingCandidate ? 'Edit Data Paslon' : 'Tambah Paslon Baru'}
-        description="Upload foto paslon, lengkapi visi & misi"
+        title={editingCandidate ? 'Edit Data Kandidat' : 'Tambah Kandidat Baru'}
+        description="Upload foto kandidat, lengkapi visi & misi"
         className="max-w-3xl w-full"
       >
         {modalError && (
@@ -1222,7 +1222,7 @@ voter02,`}
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="space-y-1.5 sm:col-span-1">
-              <label className="text-xs font-semibold text-slate-700">Nomor Urut Paslon</label>
+              <label className="text-xs font-semibold text-slate-700">Nomor Urut Kandidat</label>
               <Input
                 name="candidate_number"
                 type="number"
@@ -1238,7 +1238,7 @@ voter02,`}
               <label className="text-xs font-semibold text-slate-700">Nama Pasangan Calon</label>
               <Input
                 name="name"
-                placeholder="Contoh: Ahmad & Siti (Paslon 01)"
+                placeholder="Contoh: Ahmad & Siti"
                 defaultValue={editingCandidate?.name || ''}
                 required
                 disabled={isPending || isCompressing}
@@ -1250,14 +1250,14 @@ voter02,`}
           {/* Photo File Upload & WebP Compression UI */}
           <div className="space-y-2">
             <label className="text-xs font-semibold text-slate-700 flex items-center justify-between">
-              <span>Foto Paslon (File Upload)</span>
+              <span>Foto Kandidat (File Upload)</span>
             </label>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 p-4 border-2 border-dashed border-emerald-300 rounded-xl bg-emerald-50/40">
               {/* Photo Preview Box */}
               <div className="relative h-32 w-32 shrink-0 rounded-lg overflow-hidden bg-slate-200 border border-slate-300 flex items-center justify-center">
                 {photoPreview ? (
-                  <img src={photoPreview} alt="Preview Foto Paslon" className="w-full h-full object-cover" />
+                  <img src={photoPreview} alt="Preview Foto Kandidat" className="w-full h-full object-cover" />
                 ) : (
                   <div className="text-center p-2 text-slate-400">
                     <ImageIcon className="h-8 w-8 mx-auto mb-1" />
@@ -1296,7 +1296,7 @@ voter02,`}
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-slate-700">Visi Paslon</label>
+            <label className="text-xs font-semibold text-slate-700">Visi Kandidat</label>
             <textarea
               name="vision"
               rows={3}
@@ -1340,7 +1340,7 @@ voter02,`}
               disabled={isPending || isCompressing}
               className="h-11 px-8 font-bold bg-emerald-700 hover:bg-emerald-800 text-white"
             >
-              {isPending ? 'Menyimpan...' : 'Simpan Data Paslon'}
+              {isPending ? 'Menyimpan...' : 'Simpan Data Kandidat'}
             </Button>
           </div>
         </form>

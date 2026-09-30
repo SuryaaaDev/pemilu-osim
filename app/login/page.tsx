@@ -46,7 +46,7 @@ export default function UnifiedLoginPage() {
           E-Voting OSIM
         </h1>
         <p className="text-sm text-emerald-800/80 mt-1 font-medium">
-          Sistem Pemungutan Suara Pemilihan Ketua & Wakil Ketua OSIM
+          Sistem Pemungutan Suara Pemilihan Ketua OSIM
         </p>
       </div>
 
@@ -88,7 +88,7 @@ export default function UnifiedLoginPage() {
 
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                Password / Token
+                Password
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-3 h-4 w-4 text-emerald-600" />
@@ -115,7 +115,7 @@ export default function UnifiedLoginPage() {
           <div className="mt-6 pt-4 border-t border-slate-100 text-center">
             <div className="inline-flex items-center text-xs text-gray-400 px-3 py-1.5 font-medium">
               {/* <ShieldCheck className="h-4 w-4 text-emerald-600 mr-1.5" /> */}
-              MAN 1 Pekalongan @ 2026
+              MAN 1 Kota Pekalongan @ 2026
             </div>
           </div>
         </CardContent>

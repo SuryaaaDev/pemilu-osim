@@ -55,6 +55,10 @@ import {
   Minimize2,
   PieChart as PieChartIcon,
   Presentation,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
 } from 'lucide-react';
 import {
   BarChart,
@@ -108,9 +112,16 @@ export default function DashboardClient({
   // Realtime state notification pulse
   const [lastVoteTime, setLastVoteTime] = useState<string | null>(null);
 
-  // Search & Filter state for voters table
+  // Search & Filter & Pagination state for voters table
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'voted' | 'not_voted'>('all');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState<number | 'all'>(10);
+
+  // Auto-reset page to 1 when search term, status filter, or items per page changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, statusFilter, itemsPerPage]);
 
   // Modal & Projector states
   const [isAddVoterOpen, setIsAddVoterOpen] = useState(false);
@@ -260,6 +271,16 @@ export default function DashboardClient({
     if (statusFilter === 'not_voted') return matchesSearch && !v.has_voted;
     return matchesSearch;
   });
+
+  // Paginated Voters Calculation
+  const totalFilteredVoters = filteredVoters.length;
+  const perPageNum = itemsPerPage === 'all' ? (totalFilteredVoters || 1) : itemsPerPage;
+  const totalPages = Math.max(1, Math.ceil(totalFilteredVoters / perPageNum));
+  const validCurrentPage = Math.min(Math.max(1, currentPage), totalPages);
+
+  const startIndex = totalFilteredVoters === 0 ? 0 : (validCurrentPage - 1) * perPageNum;
+  const endIndex = Math.min(startIndex + perPageNum, totalFilteredVoters);
+  const paginatedVoters = filteredVoters.slice(startIndex, endIndex);
 
   // Recharts Colors matching logo (Emerald Green, Gold Yellow, Teal, Emerald Dark)
   const COLORS = ['#047857', '#EAB308', '#0284C7', '#10B981', '#D97706', '#059669'];
@@ -931,21 +952,22 @@ export default function DashboardClient({
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredVoters.length === 0 ? (
+                    {paginatedVoters.length === 0 ? (
                       <TableRow>
                         <TableCell colSpan={6} className="text-center py-8 text-slate-400">
                           Tidak ada data pemilih yang sesuai.
                         </TableCell>
                       </TableRow>
                     ) : (
-                      filteredVoters.map((voter, index) => {
+                      paginatedVoters.map((voter, index) => {
                         const isPasswordVisible = !!showPasswords[voter.id];
                         const pwd = voter.raw_password || '******';
+                        const globalIndex = startIndex + index + 1;
 
                         return (
                           <TableRow key={voter.id}>
                             <TableCell className="font-mono text-xs text-slate-400">
-                              {index + 1}
+                              {globalIndex}
                             </TableCell>
                             <TableCell className="font-semibold text-slate-900">
                               {voter.username}
@@ -1014,6 +1036,82 @@ export default function DashboardClient({
                     )}
                   </TableBody>
                 </Table>
+
+                {/* Pagination Footer Controls */}
+                <div className="flex flex-col sm:flex-row items-center justify-between p-4 border-t border-slate-200 bg-slate-50/60 gap-4 text-xs">
+                  <div className="flex flex-wrap items-center gap-4">
+                    <span className="text-slate-600 font-medium">
+                      {totalFilteredVoters > 0
+                        ? `Menampilkan ${startIndex + 1} - ${endIndex} dari ${totalFilteredVoters} pemilih`
+                        : '0 pemilih'}
+                    </span>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-slate-500 font-medium">Tampilkan per halaman:</span>
+                      <select
+                        value={itemsPerPage}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setItemsPerPage(val === 'all' ? 'all' : Number(val));
+                        }}
+                        className="h-8 rounded-md border border-slate-300 bg-white px-2 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-600 shadow-xs cursor-pointer"
+                      >
+                        <option value={10}>10</option>
+                        <option value={25}>25</option>
+                        <option value={50}>50</option>
+                        <option value={100}>100</option>
+                        <option value="all">Semua ({totalVotersCount})</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-1.5">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 w-8 p-0 border-slate-300"
+                      disabled={validCurrentPage <= 1}
+                      onClick={() => setCurrentPage(1)}
+                      title="Halaman Pertama"
+                    >
+                      <ChevronsLeft className="h-4 w-4 text-slate-600" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 w-8 p-0 border-slate-300"
+                      disabled={validCurrentPage <= 1}
+                      onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                      title="Halaman Sebelumnya"
+                    >
+                      <ChevronLeft className="h-4 w-4 text-slate-600" />
+                    </Button>
+
+                    <span className="px-3 font-semibold text-emerald-950">
+                      Halaman {validCurrentPage} dari {totalPages}
+                    </span>
+
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 w-8 p-0 border-slate-300"
+                      disabled={validCurrentPage >= totalPages}
+                      onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                      title="Halaman Selanjutnya"
+                    >
+                      <ChevronRight className="h-4 w-4 text-slate-600" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-8 w-8 p-0 border-slate-300"
+                      disabled={validCurrentPage >= totalPages}
+                      onClick={() => setCurrentPage(totalPages)}
+                      title="Halaman Terakhir"
+                    >
+                      <ChevronsRight className="h-4 w-4 text-slate-600" />
+                    </Button>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>

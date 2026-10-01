@@ -5,6 +5,75 @@ import DashboardClient, { CandidateItem, VoterItem } from './dashboard-client';
 
 export const dynamic = 'force-dynamic';
 
+async function fetchAllVoters(supabase: ReturnType<typeof createAdminClient>) {
+  let allVoters: Array<{
+    id: string;
+    username: string;
+    raw_password: string | null;
+    has_voted: boolean;
+    voted_at: string | null;
+    created_at: string;
+  }> = [];
+  
+  const pageSize = 1000;
+  let page = 0;
+  let hasMore = true;
+
+  while (hasMore) {
+    const from = page * pageSize;
+    const to = from + pageSize - 1;
+
+    const { data, error } = await supabase
+      .from('voters')
+      .select('id, username, raw_password, has_voted, voted_at, created_at')
+      .order('created_at', { ascending: false })
+      .range(from, to);
+
+    if (error || !data || data.length === 0) {
+      hasMore = false;
+    } else {
+      allVoters = allVoters.concat(data);
+      if (data.length < pageSize) {
+        hasMore = false;
+      } else {
+        page++;
+      }
+    }
+  }
+
+  return allVoters;
+}
+
+async function fetchAllVotes(supabase: ReturnType<typeof createAdminClient>) {
+  let allVotes: Array<{ candidate_id: string | null }> = [];
+  const pageSize = 1000;
+  let page = 0;
+  let hasMore = true;
+
+  while (hasMore) {
+    const from = page * pageSize;
+    const to = from + pageSize - 1;
+
+    const { data, error } = await supabase
+      .from('votes')
+      .select('candidate_id')
+      .range(from, to);
+
+    if (error || !data || data.length === 0) {
+      hasMore = false;
+    } else {
+      allVotes = allVotes.concat(data);
+      if (data.length < pageSize) {
+        hasMore = false;
+      } else {
+        page++;
+      }
+    }
+  }
+
+  return allVotes;
+}
+
 export default async function AdminDashboardPage() {
   const session = await getAdminSession();
 
@@ -14,11 +83,8 @@ export default async function AdminDashboardPage() {
 
   const supabase = createAdminClient();
 
-  // Fetch voters including raw_password for admin view & CSV export
-  const { data: votersData } = await supabase
-    .from('voters')
-    .select('id, username, raw_password, has_voted, voted_at, created_at')
-    .order('created_at', { ascending: false });
+  // Fetch ALL voters using paginated chunking (bypasses Supabase 1000 default row limit)
+  const votersData = await fetchAllVoters(supabase);
 
   // Fetch candidates
   const { data: candidatesData } = await supabase
@@ -26,10 +92,8 @@ export default async function AdminDashboardPage() {
     .select('*')
     .order('candidate_number', { ascending: true });
 
-  // Fetch votes table records to aggregate per candidate
-  const { data: votesData } = await supabase
-    .from('votes')
-    .select('candidate_id');
+  // Fetch ALL votes table records to aggregate per candidate
+  const votesData = await fetchAllVotes(supabase);
 
   const voteCountsMap: Record<string, number> = {};
   (votesData || []).forEach((vote) => {
